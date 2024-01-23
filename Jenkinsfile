@@ -6,13 +6,8 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        sh 'echo building...'
+        sh 'git pull origin main'
       }
-    }
-  }
-  post {
-    always {
-      sh 'echo building completed...'
     }
   }
 }

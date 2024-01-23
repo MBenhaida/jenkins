@@ -15,6 +15,8 @@ pipeline {
     }
     stage('docker build') {
       steps {
+        sh 'apt-get update'
+        sh 'apt-get install -y docker.io'
         sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
       }
     }

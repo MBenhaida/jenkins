@@ -8,14 +8,14 @@ pipeline {
     IMAGE_TAG = 'latest'
   }
   stages {
-    stage('Build') {
-      steps {
-        sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
-      }
-    }
     stage('git pull') {
       steps {
         sh 'git pull origin main'
+      }
+    }
+    stage('docker build') {
+      steps {
+        sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
       }
     }
     stage('composer install') {
@@ -23,14 +23,26 @@ pipeline {
         sh 'composer install'
       }
     }
-    stage('env copy') {
+    stage('env setup') {
       steps {
-        sh 'cp .env.example .env'
+        script {
+          if (!fileExists('.env')) {
+            sh 'cp .env.example .env'
+            sh 'php artisan key:generate'
+          } else {
+            echo '.env file already exists. Skipping env setup.'
+          }
+        }
       }
     }
-    stage('key creation') {
+    stage('running migrations and seeders') {
       steps {
-        sh 'php artisan key:generate'
+        sh 'php artisan migrate --seed'
+      }
+    }
+    stage('launching the app') {
+      steps {
+        sh 'php artisan serve'
       }
     }
   }

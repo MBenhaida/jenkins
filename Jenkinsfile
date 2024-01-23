@@ -47,5 +47,18 @@ pipeline {
         sh 'php artisan serve'
       }
     }
+    stage('run tests') {
+      steps {
+        sh 'php artisan test'
+      }
+    }
   }
+}
+
+def fileExists(filename) {
+  return fileExists(new File(filename))
+}
+
+def fileExists(file) {
+  return file.exists()
 }

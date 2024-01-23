@@ -54,9 +54,5 @@ pipeline {
 }
 
 def fileExists(filename) {
-  return fileExists(new File(filename))
-}
-
-def fileExists(file) {
-  return file.exists()
+  return new File(filename).exists()
 }
